@@ -1,13 +1,13 @@
-1 = No voice, no eye contact, no animation
+1 = Robot voice, no eye contact, no animation
 2 = Artificial voice, no eye contact, no animation
 3 = Human voice, no eye contact, no animation
-4 = No voice, eye contact, no animation
+4 = Robot voice, eye contact, no animation
 5 = Artificial voice, eye contact, no animation
 6 = Human voice, eye contact, no animation
-7 = No voice, no eye contact, animation
+7 = Robot voice, no eye contact, animation
 8 = Artificial voice, no eye contact, animation
 9 = Human voice, no eye contact, animation
-10 = No voice, eye contact, animation
+10 = Robot voice, eye contact, animation
 11 = Artificial voice, eye contact, animation
 12 = Human voice, eye contact, animation
  
