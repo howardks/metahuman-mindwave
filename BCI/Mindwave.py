@@ -20,6 +20,10 @@ import json
 import socket, select
 import hashlib
 import numpy as np
+import EmotionML as emotionML
+import pandas as pd
+from tsfresh import extract_features
+from tsfresh.feature_extraction import MinimalFCParameters
 
 class Mindwave(object): 
     def __init__(self, appname="myapp", appkey="mykey"): 
@@ -58,7 +62,7 @@ class Mindwave(object):
         except:
             print('Device already authenticated. ')
 
-    def collect_data(self, duration=40): 
+    def collect_data(self, duration=10): 
         # open socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((self.TGHOST, int(self.TGPORT)))
@@ -118,7 +122,14 @@ class Mindwave(object):
         return json_all
 
 
+if __name__ == '__main__':
+    MW = Mindwave()
+    MW.authenticate()
+    data = MW.collect_data()
 
-MW = Mindwave()
-MW.authenticate()
-MW.collect_data()
+    EML = emotionML.EmotionML()
+    df = EML.load_data(data)
+    print(df)
+    
+    EML.preprocess()
+    EML.predict()
