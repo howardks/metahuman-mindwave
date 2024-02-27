@@ -33,14 +33,14 @@ from xgboost import XGBClassifier
 from voting import VotingClassifier
 
 MODEL_PATH = './Models/'
-MODEL_NAMES = ['./Models/KNeighborsClassifier_model.pkl',
-               './Models/DecisionTreeClassifier_model.pkl',
-               './Models/RandomForestClassifier_model.pkl',
-               './Models/AdaBoostClassifier_model.pkl',
-               './Models/GradientBoostingClassifier_model.pkl',
-               './Models/GaussianNB_model.pkl',
-               './Models/LinearDiscriminantAnalysis_model.pkl',
-               './Models/XGBClassifier_model.pkl']
+MODEL_NAMES = ['BCI/Models/KNeighborsClassifier_model.pkl', 
+               'BCI/Models/DecisionTreeClassifier_model.pkl',
+               'BCI/Models/RandomForestClassifier_model.pkl',
+               'BCI/Models/AdaBoostClassifier_model.pkl',
+               'BCI/Models/GradientBoostingClassifier_model.pkl',
+               'BCI/Models/GaussianNB_model.pkl',
+               'BCI/Models/LinearDiscriminantAnalysis_model.pkl',
+               'BCI/Models/XGBClassifier_model.pkl']
 
 TSFRESH_SETTINGS = MinimalFCParameters()
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
@@ -64,6 +64,7 @@ class EmotionML(object):
         df = pd.DataFrame.from_dict(loaded, orient='index', columns=RAW_COLUMNS)
         self.data = df
         print('Data loaded. ')
+        return df
 
     def __clean_df(self, df): 
         """Helper funtion: cleans a dataframe
@@ -119,6 +120,7 @@ class EmotionML(object):
         # convert to np array
         self.sequences = np.asarray(seqs)
         print('Data converted to sequences of size {}.'.format(SEQ_SIZE))
+        return self.sequences
 
     def __format_tsfresh(self, seqs, ret):
         """Helper function: converts sequences to input format of tsfresh"""
@@ -203,5 +205,6 @@ class EmotionML(object):
         ret['lowGamma'] = self.data['lowGamma'].tolist()
         ret['highGamma'] = self.data['highGamma'].tolist()
 
+        print("Result: " + ret)
         return ret
 
