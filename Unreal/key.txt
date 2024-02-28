@@ -4,9 +4,9 @@
 4 = Robot voice, eye contact, no animation 
 5 = Artificial voice, eye contact, no animation 
 6 = Human voice, eye contact, no animation
-7 = Robot voice, no eye contact, animation - Done except idle animation
-8 = Artificial voice, no eye contact, animation - Done except idle animation
-9 = Human voice, no eye contact, animation - Done except idle animation
+7 = Robot voice, no eye contact, animation - DONE
+8 = Artificial voice, no eye contact, animation - DONE
+9 = Human voice, no eye contact, animation - DONE
 10 = Robot voice, eye contact, animation
 11 = Artificial voice, eye contact, animation
 12 = Human voice, eye contact, animation
