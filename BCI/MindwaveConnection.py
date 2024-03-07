@@ -132,14 +132,10 @@ class Mindwave(object):
 
 if __name__ == '__main__':
     MW = Mindwave()
-    # MW.authenticate()
-    # data = MW.collect_data()
-    # df = MW.create_df(data)
+    MW.authenticate()
+    data = MW.collect_data()
+    df = MW.create_df(data)
     
-    # df.to_csv('test.csv')
-    # print(df)
-
-    df = pd.read_csv('test.csv')
+    df.to_csv('test.csv')
     print(df)
-    MW.create_linegraph(df)
     
