@@ -22,6 +22,7 @@ import hashlib
 import numpy as np
 import EmotionML as emotionML
 import pandas as pd
+import sklearn
 from tsfresh import extract_features
 from tsfresh.feature_extraction import MinimalFCParameters
 
@@ -133,3 +134,4 @@ if __name__ == '__main__':
     
     EML.preprocess()
     EML.predict()
+  

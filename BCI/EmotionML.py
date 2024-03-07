@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import json
 import pickle
+import sklearn
 from statistics import mean 
 from tsfresh import extract_features
 from tsfresh.feature_extraction import MinimalFCParameters
@@ -33,14 +34,14 @@ from xgboost import XGBClassifier
 from voting import VotingClassifier
 
 MODEL_PATH = './Models/'
-MODEL_NAMES = ['BCI/Models/KNeighborsClassifier_model.pkl', 
-               'BCI/Models/DecisionTreeClassifier_model.pkl',
-               'BCI/Models/RandomForestClassifier_model.pkl',
-               'BCI/Models/AdaBoostClassifier_model.pkl',
-               'BCI/Models/GradientBoostingClassifier_model.pkl',
-               'BCI/Models/GaussianNB_model.pkl',
-               'BCI/Models/LinearDiscriminantAnalysis_model.pkl',
-               'BCI/Models/XGBClassifier_model.pkl']
+MODEL_NAMES = ['Models/KNeighborsClassifier_model.pkl', 
+               'Models/DecisionTreeClassifier_model.pkl',
+               'Models/RandomForestClassifier_model.pkl',
+               'Models/AdaBoostClassifier_model.pkl',
+               'Models/GradientBoostingClassifier_model.pkl',
+               'Models/GaussianNB_model.pkl',
+               'Models/LinearDiscriminantAnalysis_model.pkl',
+               'Models/XGBClassifier_model.pkl']
 
 TSFRESH_SETTINGS = MinimalFCParameters()
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
@@ -124,14 +125,16 @@ class EmotionML(object):
 
     def __format_tsfresh(self, seqs, ret):
         """Helper function: converts sequences to input format of tsfresh"""
+        dataframes = []
         for i in range(seqs.shape[0]): 
             df = pd.DataFrame(data=seqs[i, 0], columns=COLUMNS)
             df = df.assign(id=[i]*SEQ_SIZE)
             df = df.assign(time=df.index)
-            df = df.reindex(columns = NEW_COLUMNS)
-            ret = ret.append(df)
-        return ret
-
+            df = df.reindex(columns=NEW_COLUMNS)
+            dataframes.append(df)
+        ret = pd.concat(dataframes, ignore_index=True)
+        return ret  # Make sure to return the concatenated DataFrame
+    
     def preprocess(self): 
         """Extracts features from sequences"""
         self._clean_data()
@@ -141,7 +144,12 @@ class EmotionML(object):
 
         # format sequences for tsfresh
         formated_seqs = pd.DataFrame(columns=NEW_COLUMNS)
-        formated_seqs = self.__format_tsfresh(self.sequences, formated_seqs)
+        formated_seqs = self.__format_tsfresh(self.sequences, formated_seqs)  # Use the returned DataFrame
+        # Ensure formated_seqs is not None or empty before proceeding
+        if formated_seqs is None or formated_seqs.empty:
+            print("No data to preprocess.")
+            return
+
         # reset index and convert to float
         formated_seqs.reset_index(drop=True, inplace=True)
         formated_seqs = formated_seqs.astype(float)
