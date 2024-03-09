@@ -6,6 +6,7 @@ import socket
 import time
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
 
@@ -114,11 +115,27 @@ class Mindwave(object):
         print('Data loaded. ')
         return df
     
-
+    def create_linegraph(self, dataf):
+        plt.plot(dataf['delta'], color='red', label='delta')
+        plt.plot(dataf['theta'], color='orange', label='theta')
+        plt.plot(dataf['lowAlpha'], color='yellow', label='low alpha')
+        plt.plot(dataf['highAlpha'], color='green', label='high alpha')
+        plt.plot(dataf['lowBeta'], color='blue', label='low beta')
+        plt.plot(dataf['highBeta'], color='indigo', label='high beta')
+        plt.plot(dataf['lowGamma'], color='violet', label='low gamma')
+        plt.plot(dataf['highGamma'], color='pink', label='high gamma')
+        plt.legend()
+        plt.title("Mindwave Mobile 2 EEG Wave Quantities")
+        plt.xlabel("Time")
+        plt.ylabel("Amount")
+        plt.show()
 
 if __name__ == '__main__':
     MW = Mindwave()
     MW.authenticate()
     data = MW.collect_data()
+    df = MW.create_df(data)
     
-    print(MW.create_df(data))
+    df.to_csv('test.csv')
+    print(df)
+    
