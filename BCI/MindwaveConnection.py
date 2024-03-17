@@ -1,5 +1,5 @@
-
-
+#Author: Tierra Anthony and Kaylie Howard
+#MindwaveConnection.py
 import hashlib
 import json
 import socket
@@ -7,6 +7,9 @@ import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler  # Import necessary module for preprocessing
+from joblib import load  # Import joblib to load your trained model and scaler
+from EmotionDetection import EmotionDetection
 
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
 
@@ -129,13 +132,51 @@ class Mindwave(object):
         plt.xlabel("Time")
         plt.ylabel("Amount")
         plt.show()
+        
+        
+    def realtime_emotion_detection(self):
+        self.authenticate()  # Authenticate with the Mindwave Mobile 2 device
+        json_data = self.collect_data(duration=10)  # Collect data for a set duration
+        
+        if json_data is not None:
+            df = self.create_df(json_data)  # Create a DataFrame from the collected data
+            
+            # Load the trained model and scaler
+            trained_model = load('trained_emotion_model.pkl')
+            scaler = load('emotion_scaler.pkl')
+            
+            # Scale the collected data
+            processed_data = scaler.transform(df[RAW_COLUMNS])
+            
+            # Make predictions using the trained model
+            predictions = trained_model.predict(processed_data)
+            
+            # Display the predictions in real-time
+            for prediction in predictions:
+                print(f"Predicted emotion: {prediction}")
+            
+            return predictions  # Optionally return the predictions 
 
 if __name__ == '__main__':
     MW = Mindwave()
-    MW.authenticate()
+    #MW.authenticate()
+    MW.realtime_emotion_detection()
     data = MW.collect_data()
     df = MW.create_df(data)
     
     df.to_csv('test.csv')
-    print(df)
+
+    # Instead of printing data, pass it to EmotionDetection for processing
+    # Convert the collected JSON data to a pandas DataFrame
+    data_json = json.loads(data)  # Assuming data is a JSON string of collected data
+    df_data = pd.DataFrame.from_dict(data_json, orient='index', columns=RAW_COLUMNS)
+    # Initialize EmotionDetection and process the collected data
+    emotion_detector = EmotionDetection('trained_emotion_model.pkl', 'emotion_scaler.pkl')
+    processed_data = emotion_detector.preprocess_data(df_data)
+    # After collecting and processing data into 'df' DataFrame
     
+
+    print(df)
+    predictions = emotion_detector.predict_emotion(processed_data)
+    print("DataFrame of Collected EEG Data:\n", df)
+    print("Predicted Emotional States:", predictions)
