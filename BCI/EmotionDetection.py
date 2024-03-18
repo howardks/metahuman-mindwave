@@ -9,7 +9,7 @@ class EmotionDetection:
         # Load the model and scaler
         self.model = joblib.load(model_path)
         self.scaler = joblib.load(scaler_path)
-        self.class_names = ['very negative', 'negative', 'neutral', 'positive', 'very positive']
+        
         
     def preprocess_data(self, df):
         # Preprocess the data
@@ -23,9 +23,7 @@ class EmotionDetection:
     
     def predict_emotion(self, processed_data):
         # Predict emotional states using the model
-        # Predict emotional states using the model
         predictions = self.model.predict(processed_data)
-        predicted_states = [self.class_names[pred] for pred in predictions]
-        return predicted_states
+        return predictions
 
 

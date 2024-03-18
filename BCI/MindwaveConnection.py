@@ -141,12 +141,16 @@ class Mindwave(object):
         if json_data is not None:
             df = self.create_df(json_data)  # Create a DataFrame from the collected data
             
+            # Exclude 'attention' and 'meditation' columns before processing
+            if 'attention' in df.columns and 'meditation' in df.columns:
+                df = df.drop(columns=['attention', 'meditation'])
             # Load the trained model and scaler
             trained_model = load('trained_emotion_model.pkl')
             scaler = load('emotion_scaler.pkl')
             
-            # Scale the collected data
-            processed_data = scaler.transform(df[RAW_COLUMNS])
+            # Adjust EXPECTED_COLUMNS as necessary to match your model's training data
+            EXPECTED_COLUMNS = ['delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
+            processed_data = scaler.transform(df[EXPECTED_COLUMNS])
             
             # Make predictions using the trained model
             predictions = trained_model.predict(processed_data)
@@ -163,20 +167,17 @@ if __name__ == '__main__':
     MW.realtime_emotion_detection()
     data = MW.collect_data()
     df = MW.create_df(data)
-    
     df.to_csv('test.csv')
+   
 
     # Instead of printing data, pass it to EmotionDetection for processing
     # Convert the collected JSON data to a pandas DataFrame
     data_json = json.loads(data)  # Assuming data is a JSON string of collected data
-    df_data = pd.DataFrame.from_dict(data_json, orient='index', columns=RAW_COLUMNS)
+
     # Initialize EmotionDetection and process the collected data
     emotion_detector = EmotionDetection('trained_emotion_model.pkl', 'emotion_scaler.pkl')
-    processed_data = emotion_detector.preprocess_data(df_data)
+
     # After collecting and processing data into 'df' DataFrame
     
-
-    print(df)
-    predictions = emotion_detector.predict_emotion(processed_data)
+   
     print("DataFrame of Collected EEG Data:\n", df)
-    print("Predicted Emotional States:", predictions)
