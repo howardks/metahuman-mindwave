@@ -125,7 +125,7 @@ if __name__ == '__main__':
     print('Press enter to begin collecting baseline data. ')
     input()
 
-    data = MW.collect_data(duration=120)
+    data = MW.collect_data(duration=90)
     df = MW.create_df(data)
     df.to_csv('BCI//Data//{0}_baseline.csv'.format(userNum))
     print('Baseline data collected. ')
@@ -138,7 +138,7 @@ if __name__ == '__main__':
         print('Press enter to begin collecting LEVEL {0} data. '.format(trial))
         input()
 
-        data = MW.collect_data(duration=120)
+        data = MW.collect_data(duration=90)
         df = MW.create_df(data)
         df.to_csv('BCI//Data//{0}_trial_{1}.csv'.format(userNum, trial))
         print('LEVEL {0} data collected. '.format(trial))
