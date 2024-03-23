@@ -125,7 +125,7 @@ if __name__ == '__main__':
     print('Press enter to begin collecting baseline data. ')
     input()
 
-    data = MW.collect_data(duration=10)
+    data = MW.collect_data(duration=120)
     df = MW.create_df(data)
     df.to_csv('BCI//Data//{0}_baseline.csv'.format(userNum))
     print('Baseline data collected. ')
