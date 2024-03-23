@@ -6,6 +6,7 @@ import socket
 import time
 import numpy as np
 import pandas as pd
+import random
 
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
 
@@ -118,8 +119,29 @@ class Mindwave(object):
 if __name__ == '__main__':
     MW = Mindwave()
     MW.authenticate()
-    data = MW.collect_data(duration=120)
+
+    print('Input user number: ')
+    userNum = input()
+
+    print('Press enter to begin collecting baseline data. ')
+    input()
+
+    data = MW.collect_data(duration=10)
     df = MW.create_df(data)
-    df.to_csv('BCI//Data//test.csv')
-   
-    print("DataFrame of Collected EEG Data:\n", df)
+    df.to_csv('BCI//Data//{0}_baseline.csv'.format(userNum))
+    print('Baseline data collected. ')
+    
+    numList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+
+    while numList:
+        trial = numList.pop(random.randint(0,len(numList) - 1))
+
+        print('Press enter to begin collecting LEVEL {0} data. '.format(trial))
+        input()
+
+        data = MW.collect_data(duration=10)
+        df = MW.create_df(data)
+        df.to_csv('BCI//Data//{0}_trial_{1}.csv'.format(userNum, trial))
+        print('LEVEL {0} data collected. '.format(trial))
+
+    print('Experiment completed. ')
