@@ -1,12 +1,12 @@
-
-
+#Author: Tierra Anthony and Kaylie Howard
+#MindwaveConnection.py
 import hashlib
 import json
 import socket
 import time
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import random
 
 RAW_COLUMNS = ['attention', 'meditation', 'delta', 'theta', 'lowAlpha', 'highAlpha', 'lowBeta', 'highBeta', 'lowGamma', 'highGamma']
 
@@ -89,8 +89,7 @@ class Mindwave(object):
                         d += 1
                 # check if timeout
                 curr_time = time.time()
-                if curr_time-start_time > 80:
-                    data_all = None
+                if curr_time-start_time > 600:
                     break
             except:
                 print ('Could not read from socket. Please try again. ')
@@ -115,27 +114,33 @@ class Mindwave(object):
         print('Data loaded. ')
         return df
     
-    def create_linegraph(self, dataf):
-        plt.plot(dataf['delta'], color='red', label='delta')
-        plt.plot(dataf['theta'], color='orange', label='theta')
-        plt.plot(dataf['lowAlpha'], color='yellow', label='low alpha')
-        plt.plot(dataf['highAlpha'], color='green', label='high alpha')
-        plt.plot(dataf['lowBeta'], color='blue', label='low beta')
-        plt.plot(dataf['highBeta'], color='indigo', label='high beta')
-        plt.plot(dataf['lowGamma'], color='violet', label='low gamma')
-        plt.plot(dataf['highGamma'], color='pink', label='high gamma')
-        plt.legend()
-        plt.title("Mindwave Mobile 2 EEG Wave Quantities")
-        plt.xlabel("Time")
-        plt.ylabel("Amount")
-        plt.show()
 
 if __name__ == '__main__':
     MW = Mindwave()
     MW.authenticate()
-    data = MW.collect_data()
+
+    print('Input user number: ')
+    userNum = input()
+
+    print('Press enter to begin collecting baseline data. ')
+    input()
+
+    data = MW.collect_data(duration=90)
     df = MW.create_df(data)
+    df.to_csv('BCI//Data//{0}_baseline.csv'.format(userNum))
+    print('Baseline data collected. ')
     
-    df.to_csv('test.csv')
-    print(df)
-    
+    numList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+
+    while numList:
+        trial = numList.pop(random.randint(0,len(numList) - 1))
+
+        print('Press enter to begin collecting LEVEL {0} data. '.format(trial))
+        input()
+
+        data = MW.collect_data(duration=90)
+        df = MW.create_df(data)
+        df.to_csv('BCI//Data//{0}_trial_{1}.csv'.format(userNum, trial))
+        print('LEVEL {0} data collected. '.format(trial))
+
+    print('Experiment completed. ')

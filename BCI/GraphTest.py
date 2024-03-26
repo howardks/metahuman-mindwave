@@ -19,11 +19,10 @@ def create_linegraph(dataf):
 
 def create_plotly(dataf):
     fig = px.line(dataf, title='delta')
-    fig.write_html('wave_data.html', auto_open=True)
+    fig.write_html('BCI//Data//wave_data.html', auto_open=True)
 
 if __name__ == '__main__':
-    df = pd.read_csv('test.csv')
-    print(df.columns)
-    df.drop('Unnamed: 0', axis=1, inplace=True)
+    df = pd.read_csv('BCI//Data//test.csv')
+    df.drop(['Unnamed: 0', 'attention', 'meditation'], axis=1, inplace=True)
     # create_linegraph(df)
     create_plotly(df)
